@@ -8,12 +8,14 @@ export function addXCConfigurationList(
     currentProjectVersion,
     bundleIdentifier,
     deploymentTarget,
+    supportsTablet,
   }: {
     name: string;
     targetName: string;
     currentProjectVersion: string;
     bundleIdentifier: string;
     deploymentTarget: string;
+    supportsTablet: boolean;
   }
 ) {
   const commonBuildSettings: any = {
@@ -28,7 +30,7 @@ export function addXCConfigurationList(
     PRODUCT_NAME: `"${name}"`,
     SWIFT_VERSION: "5.0",
     VERSIONING_SYSTEM: `"apple-generic"`,
-    // TARGETED_DEVICE_FAMILY: `"1,2"`,
+    TARGETED_DEVICE_FAMILY: `"1${supportsTablet && `,2`}"`,
     CODE_SIGN_ENTITLEMENTS: `${targetName}/${targetName}.entitlements`,
   };
 

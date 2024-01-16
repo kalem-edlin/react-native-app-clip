@@ -1,9 +1,10 @@
-import { ConfigPlugin, withPlugins, IOSConfig } from "@expo/config-plugins";
+import { ConfigPlugin, IOSConfig, withPlugins } from "@expo/config-plugins";
+// import Constants from "expo-constants";
 
-import { withConfig } from "./withConfig";
 import { withAppClipEntitlements } from "./withAppClipEntitlements";
-import { withPodfile } from "./withPodfile";
 import { withAppClipPlist } from "./withAppClipPlist";
+import { withConfig } from "./withConfig";
+import { withPodfile } from "./withPodfile";
 import { withXcode } from "./withXcode";
 
 const withAppClip: ConfigPlugin<{
@@ -28,6 +29,7 @@ const withAppClip: ConfigPlugin<{
 ) => {
   const bundleIdentifier = `${config.ios?.bundleIdentifier}.Clip`;
   const targetName = `${IOSConfig.XcodeUtils.sanitizedName(config.name)}Clip`;
+  const supportsTablet = /*Constants.expoConfig?.ios?.supportsTablet ??*/ false;
 
   config = withPlugins(config, [
     [
@@ -57,6 +59,7 @@ const withAppClip: ConfigPlugin<{
         targetName,
         bundleIdentifier,
         deploymentTarget,
+        supportsTablet,
       },
     ],
   ]);
