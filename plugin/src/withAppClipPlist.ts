@@ -1,6 +1,5 @@
 import { ConfigPlugin, InfoPlist, withInfoPlist } from "@expo/config-plugins";
 import plist from "@expo/plist";
-import Constants from "expo-constants";
 import fs from "fs";
 import path from "path";
 
@@ -65,11 +64,11 @@ export const withAppClipPlist: ConfigPlugin<{
     fs.writeFileSync(filePath, plist.build(infoPlist));
 
     // Expo.plist
-    const updatesConfig = Constants.expoConfig?.updates;
+    const updatesConfig = config.updates;
     if (updatesConfig) {
       const expoPlistFilePath = path.join(targetPath, "Supporting/Expo.plist");
       const expoPlist: InfoPlist = {
-        EXUpdatesRuntimeVersion: Constants.expoConfig?.runtimeVersion,
+        EXUpdatesRuntimeVersion: config.runtimeVersion,
         EXUpdatesURL: updatesConfig.url ?? "",
         EXUpdatesEnabled: updatesConfig?.enabled ?? false,
         EXUpdatesRequestHeaders: updatesConfig.requestHeaders ?? {},
