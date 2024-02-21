@@ -1,5 +1,6 @@
-import plist from "@expo/plist";
 import { ConfigPlugin, InfoPlist, withInfoPlist } from "@expo/config-plugins";
+import plist from "@expo/plist";
+import Constants from "expo-constants";
 import fs from "fs";
 import path from "path";
 
@@ -15,12 +16,12 @@ export const withAppClipPlist: ConfigPlugin<{
     deploymentTarget,
     requestEphemeralUserNotification = false,
     requestLocationConfirmation = false,
-  }
+  },
 ) => {
   return withInfoPlist(config, (config) => {
     const targetPath = path.join(
       config.modRequest.platformProjectRoot,
-      targetName
+      targetName,
     );
 
     // Info.plist
@@ -64,17 +65,23 @@ export const withAppClipPlist: ConfigPlugin<{
     fs.writeFileSync(filePath, plist.build(infoPlist));
 
     // Expo.plist
-    const expoPlistFilePath = path.join(targetPath, "Supporting/Expo.plist");
-    const expoPlist: InfoPlist = {
-      EXUpdatesRuntimeVersion: "exposdk:48.0.0", // TODO
-      // EXUpdatesURL: "", // TODO
-      EXUpdatesEnabled: false,
-    };
+    const updatesConfig = Constants.expoConfig?.updates;
+    if (updatesConfig) {
+      const expoPlistFilePath = path.join(targetPath, "Supporting/Expo.plist");
+      const expoPlist: InfoPlist = {
+        EXUpdatesRuntimeVersion: Constants.expoConfig?.runtimeVersion,
+        EXUpdatesURL: updatesConfig.url ?? "",
+        EXUpdatesEnabled: updatesConfig?.enabled ?? false,
+        EXUpdatesRequestHeaders: updatesConfig.requestHeaders ?? {},
+        EXUpdatesCheckOnLaunch: "ALWAYS",
+        EXUpdatesLaunchWaitMs: 0,
+      };
 
-    fs.mkdirSync(path.dirname(expoPlistFilePath), {
-      recursive: true,
-    });
-    fs.writeFileSync(expoPlistFilePath, plist.build(expoPlist));
+      fs.mkdirSync(path.dirname(expoPlistFilePath), {
+        recursive: true,
+      });
+      fs.writeFileSync(expoPlistFilePath, plist.build(expoPlist));
+    }
 
     return config;
   });
