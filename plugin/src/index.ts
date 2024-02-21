@@ -29,7 +29,7 @@ const withAppClip: ConfigPlugin<{
 ) => {
   const bundleIdentifier = `${config.ios?.bundleIdentifier}.Clip`;
   const targetName = `${IOSConfig.XcodeUtils.sanitizedName(config.name)}Clip`;
-  const supportsTablet = /*Constants.expoConfig?.ios?.supportsTablet ??*/ false;
+  const supportsTablet = config.ios?.supportsTablet ?? false;
 
   config = withPlugins(config, [
     [
